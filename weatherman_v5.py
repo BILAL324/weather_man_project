@@ -6,7 +6,6 @@ import datetime
 folder_path = sys.argv[1]
 args = sys.argv[2:]
 
-
 # here we are saving tupples of each pair with tag and year_month argument as list
 tag_month_pairs = []
 i = 0
@@ -25,6 +24,7 @@ while i < len(args):
 if not tag_month_pairs:
     print("Please provide at least one report tag (-e, -a, -c) with its date.")
     sys.exit(1)
+
 
 # 3 functions for 3 operations in Module 1 of the Task
 # Max temprature and its date from all months of seperate reports in the year
@@ -59,6 +59,7 @@ def max_temp (weather_files , highest_temp, high_date_time_string):
 
     return highest_temp, high_date_time_string
 
+
 # Min temprature and its date from all months of seperate reports in the year
 def min_temp (weather_files ,lowest_temp, low_date_time_string  ):
 
@@ -90,6 +91,7 @@ def min_temp (weather_files ,lowest_temp, low_date_time_string  ):
                     continue
 
     return lowest_temp, low_date_time_string
+
 
 # Max humidity and its date from all months of seperate reports in the year
 def max_hunidity (weather_files, humidity, humidity_date_time_string ):
@@ -313,6 +315,7 @@ for choice_tag, report_year in tag_month_pairs:
 
         highest_temp, lowest_temp = min_max_temp(complete_file_name, highest_temp, lowest_temp)
 
+        # colors to change color in terminal (ANSI Escape (\033))
         RED = '\033[31m'
         BLUE = '\033[34m'
         RESET = '\033[0m' 
@@ -333,12 +336,8 @@ for choice_tag, report_year in tag_month_pairs:
 
         highest_temp, lowest_temp = min_max_temp(complete_file_name, highest_temp, lowest_temp)
 
-        RED = '\033[31m'
-        BLUE = '\033[34m'
-        RESET = '\033[0m' 
         print(f'\n{partial_file_name}')
-        print(f"{RED}{'+' * highest_temp} {highest_temp}°C{RESET}")
-        print(f"{BLUE}{'+' * lowest_temp} {lowest_temp}°C {RESET}")
+        print(f"{'+' * highest_temp}{'+' * lowest_temp} {lowest_temp}°C -- {highest_temp}°C")
 
 if __name__ == "__main__":
     print("Weather report generation completed successfully.")
