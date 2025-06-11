@@ -1,13 +1,7 @@
-# PKT,Max TemperatureC,Mean TemperatureC,Min TemperatureC,Dew PointC,MeanDew PointC,Min DewpointC,Max Humidity, Mean Humidity, Min Humidity, Max Sea Level PressurehPa, Mean Sea Level PressurehPa, Min Sea Level PressurehPa, Max VisibilityKm, Mean VisibilityKm, Min VisibilitykM, Max Wind SpeedKm/h, Mean Wind SpeedKm/h, Max Gust SpeedKm/h,Precipitationmm, CloudCover, Events,WindDirDegrees
-# 2014-4-1,18,12,5,2,0,-3,54,33,16,,,,10.0,7.0,4.0,7,1,,0.0,,,-1
-
-# {'PKT': '2004-8-1', 'Max TemperatureC': '23', 'Mean TemperatureC': '', 'Min TemperatureC': '22', 'Dew PointC': '18', 'MeanDew PointC': '18', 'Min DewpointC': '18', 'Max Humidity': '68', ' Mean Humidity': '68', ' Min Humidity': '68', ' Max Sea Level PressurehPa': '', ' Mean Sea Level PressurehPa': '', ' Min Sea Level PressurehPa': '', ' Max VisibilityKm': '10.0', ' Mean VisibilityKm': '10.0', ' Min VisibilitykM': '10.0', ' Max Wind SpeedKm/h': '6', ' Mean Wind SpeedKm/h': '6', ' Max Gust SpeedKm/h': '', 'Precipitationmm': '0.0', ' CloudCover': '', ' Events': '', 'WindDirDegrees': '-1'},
-
 import sys
 import glob
 import os
 import datetime
-
 
 folder_path = sys.argv[1]
 choice_tag =sys.argv[2]

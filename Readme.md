@@ -32,6 +32,7 @@ Humidity: 95% on August 14
 
 ---
 
+
 #### 2. **Monthly Averages Report**
 
 **For a given month, display:**

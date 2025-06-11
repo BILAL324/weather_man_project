@@ -72,13 +72,13 @@ def min_temp (weather_files ,lowest_temp, low_date_time_string  ):
                     var = float(data[i]['Max TemperatureC'])
                     if var <= lowest_temp:
                         lowest_temp = var
-                        date_time_string = data[i]['PKT']
+                        low_date_time_string = data[i]['PKT']
                     else:
                         continue
                 except ValueError:
                     continue
 
-    return lowest_temp, date_time_string
+    return lowest_temp, low_date_time_string
 
 
 def max_hunidity (weather_files, humidity ,humidity_date_time_string ):
@@ -86,7 +86,6 @@ def max_hunidity (weather_files, humidity ,humidity_date_time_string ):
     for i in weather_files:
         with open(i, 'r') as file:
             header = file.readline().strip().split(',')
-            max = header[1]
 
             data = []
 
@@ -117,6 +116,8 @@ def max_hunidity (weather_files, humidity ,humidity_date_time_string ):
 
 
 def parsing_date (strings):
+    if not strings:
+        return "N/A"
     parse_obj = datetime.datetime.strptime(strings,'%Y-%m-%d')
     parse_date = parse_obj.strftime('%B %d')
     
@@ -213,9 +214,9 @@ if choice_tag =='-e':
     humidity_date_time_string = parsing_date(humidity_date_time_string)
 
 
-
     print(f'Highest: {highest}°C on {high_date_time_string} \nLowest: {lowest}°C on {low_date_time_string} \nHumidity: \
 {max_humidity} on {humidity_date_time_string}' )
+
 
 elif choice_tag == '-a':
 
@@ -233,8 +234,10 @@ elif choice_tag == '-a':
     avg_high_temp, avg_low_temp, avg_humidity = avg_temp(complete_file_name, avg_high_temp, avg_low_temp, avg_humidity)
     print(f'Highest Average: {avg_high_temp:.2f}°C \nLowest Average: {avg_low_temp:.2f}°C \nAverage Mean Humidity: {avg_humidity:.2f}% ' )
 
+
 elif choice_tag == '-c':
     print("Choice tag -c is in Progress")
+
 
 else:
     print("Please check your tag or Command")

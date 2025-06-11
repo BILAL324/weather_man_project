@@ -30,7 +30,6 @@ def max_temp (weather_files , highest_temp, high_date_time_string):
     for i in weather_files:
         with open(i, 'r') as file:
             header = file.readline().strip().split(',')
-            max = header[1]
 
             data = []
 
@@ -58,37 +57,27 @@ def max_temp (weather_files , highest_temp, high_date_time_string):
     return highest_temp, high_date_time_string
 
 
-def min_temp (weather_files ,lowest_temp, low_date_time_string  ):
-
+def min_temp(weather_files, lowest_temp, low_date_time_string):
     for i in weather_files:
         with open(i, 'r') as file:
             header = file.readline().strip().split(',')
-            max = header[1]
-
             data = []
-
             for lines in file:
                 values = lines.strip().split(',')
-
                 row = {}
-                for i , column in enumerate(header):
+                for i, column in enumerate(header):
                     if i < len(values):
                         row[column] = values[i]
-                        
                 data.append(row)
-
             for i in range(len(data)):
-                try:       
-                    var = float(data[i]['Max TemperatureC'])
+                try:
+                    var = float(data[i]['Min TemperatureC']) 
                     if var <= lowest_temp:
                         lowest_temp = var
-                        date_time_string = data[i]['PKT']
-                    else:
-                        continue
+                        low_date_time_string = data[i]['PKT']
                 except ValueError:
                     continue
-
-    return lowest_temp, date_time_string
+    return lowest_temp, low_date_time_string
 
 
 def max_hunidity (weather_files, humidity ,humidity_date_time_string ):
@@ -126,8 +115,10 @@ def max_hunidity (weather_files, humidity ,humidity_date_time_string ):
     return max_humidity, humidity_date_time_string
 
 
-def parsing_date (strings):
-    parse_obj = datetime.datetime.strptime(strings,'%Y-%m-%d')
+def parsing_date(strings):
+    if not strings:
+        return "N/A"
+    parse_obj = datetime.datetime.strptime(strings, '%Y-%m-%d')
     parse_date = parse_obj.strftime('%B %d')
     return parse_date
 
@@ -155,33 +146,3 @@ elif choice_tag == '-c':
 
 else:
     print("Please check your tag or Command")
-
-
-
-    
-
-
-        
-
-
-
-
-
-# import sys
-
-# if sys.argv[1] == "-e":
-#     report_year = sys.argv[2] 
-#     report_name = f"Murree_weather_{report_year}_{*}"
-
-#     with open('report_name', 'r') as file:
-    
-
-
-
-
-
-
-
-# Highest: 45C on June 23  
-# Lowest: 01C on December 22  
-# Humidity: 95% on August 14
