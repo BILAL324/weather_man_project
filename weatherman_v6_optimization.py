@@ -2,14 +2,15 @@ import os
 import argparse
 import datetime
 import csv
+import statistics
+
 
 #Get all files of specfic year
 def get_weather_files(folder, year):
     all_files = []
     for filename in os.listdir(folder):
         if f"Murree_weather_{year}_" in filename and filename.endswith('.txt'):
-            full_file_path = os.path.join(folder, filename)
-            all_files.append(full_file_path)
+            all_files.append(os.path.join(folder, filename))
     
     return all_files
 
@@ -27,31 +28,31 @@ def read_csv(filepath):
         return [row for row in reader]
     
 #get max , min values for temp in all files, and Humidity values
-def get_extreme_value(all_files, column, compare, default):
-    value = default
-    date_string = ''
+def get_extreme_value(all_files, column_name, compare, temp_humidity_default):
+    temp_humidity_value= temp_humidity_default
+    date_string = ""
     for file in all_files:
         for row in read_csv(file):
-            try:
-                current = float(row[column])
-                if compare(current, value):
-                    value = current
-                    date_string = row.get('PKT')
-                    if date_string == "":
-                        continue
-                    else:
-                        date_string = date_string
-            except (ValueError, KeyError):
+            if row[column_name]== '':
                 continue
+            current = float(row[column_name])
+            if compare(current, temp_humidity_value):
+                temp_humidity_value= current
+                date_string = row.get('PKT')
+                if date_string == "":
+                    continue
+                else:
+                    date_string = date_string
 
-    return value, parse_date(date_string)
+    return temp_humidity_value, parse_date(date_string)
 
 # compute the average temperatures and humidity
 def compute_averages(file):
     rows = read_csv(file)
-    def avg(column):
-        vals = [int(row[column]) for row in rows if row.get(column, '').isdigit()]
-        return sum(vals) / len(vals)
+    def avg(column_name):
+        vals = [int(row[column_name]) for row in rows if row.get(column_name, '').isdigit()]
+
+        return statistics.mean(vals)
     
     return avg('Max TemperatureC'), avg('Min TemperatureC'), avg(' Mean Humidity')
 
@@ -94,13 +95,13 @@ def main():
     if args.extreme:
         files = get_weather_files(args.folder, args.extreme)
 
-        high, high_date = get_extreme_value(files, 'Max TemperatureC', lambda x, y: x > y, -1000)
-        low, low_date = get_extreme_value(files, 'Max TemperatureC', lambda x, y: x < y, 1000)
-        hum, hum_date = get_extreme_value(files, 'Max Humidity', lambda x, y: x > y, -1000)
+        high_temp, high_temp_date = get_extreme_value(files, 'Max TemperatureC', lambda x, y: x > y, -1000)
+        low_temp, low_temp_date = get_extreme_value(files, 'Max TemperatureC', lambda x, y: x < y, 1000)
+        max_humidity, max_humidity_date = get_extreme_value(files, 'Max Humidity', lambda x, y: x > y, -1000)
 
-        print(f"\nHighest: {high}°C on {high_date}")
-        print(f"Lowest: {low}°C on {low_date}")
-        print(f"Humidity: {hum}% on {hum_date}")
+        print(f"\nHighest: {high_temp}°C on {high_temp_date}")
+        print(f"Lowest: {low_temp}°C on {low_temp_date}")
+        print(f"Humidity: {max_humidity}% on {max_humidity_date}")
 
 # for monthly reports form single files 
     for choice_tag, value in {
@@ -111,25 +112,22 @@ def main():
         if not value:
             continue
 
-        try:
-            year, month = map(int, value.split('/'))
-            file_name = datetime.datetime(year, month, 1).strftime('Murree_weather_%Y_%b.txt')
-            file_path = os.path.join(args.folder, file_name)
+        year, month = map(int, value.split('/'))
+        file_name = datetime.datetime(year, month, 1).strftime('Murree_weather_%Y_%b.txt')
+        file_path = os.path.join(args.folder, file_name)
 
-            if choice_tag == 'average':
-                high_avg, low_avg, hum_avg = compute_averages(file_path)
-                print(f"\nHighest Avg: {high_avg:.2f}°C\nLowest Avg: {low_avg:.2f}°C\nAvg Humidity: {hum_avg:.2f}%")
+        if choice_tag == 'average':
+            high_avg, low_avg, hum_avg = compute_averages(file_path)
+            print(f"\nHighest Avg: {high_avg:.2f}°C\nLowest Avg: {low_avg:.2f}°C\nAvg Humidity: {hum_avg:.2f}%")
 
-            elif choice_tag == 'chart':
-                high, low = get_month_min_max(file_path)
-                print_bar_chart(high, low, label=file_name)
+        elif choice_tag == 'chart':
+            high, low = get_month_min_max(file_path)
+            print_bar_chart(high, low, label=file_name)
 
-            elif choice_tag == 'barchart':
-                high, low = get_month_min_max(file_path)
-                print_bar_chart(high, low, label=file_name, combine=True)
+        elif choice_tag == 'barchart':
+            high, low = get_month_min_max(file_path)
+            print_bar_chart(high, low, label=file_name, combine=True)
 
-        except Exception as e:
-            print(f"Error parsing input {value}: {e}")
 
 if __name__ == '__main__':
     main()
