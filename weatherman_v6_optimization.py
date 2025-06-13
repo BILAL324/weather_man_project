@@ -4,7 +4,6 @@ import datetime
 import csv
 import statistics
 
-
 #Get all files of specfic year
 def get_weather_files(folder, year):
     all_files = []
@@ -46,15 +45,20 @@ def get_extreme_value(all_files, column_name, compare, temp_humidity_default):
 
     return temp_humidity_value, parse_date(date_string)
 
+
+def column_average(rows, column_name):
+    vals = [int(row[column_name]) for row in rows if row.get(column_name, '').isdigit()]
+    
+    return statistics.mean(vals) 
+
 # compute the average temperatures and humidity
 def compute_averages(file):
     rows = read_csv(file)
-    def avg(column_name):
-        vals = [int(row[column_name]) for row in rows if row.get(column_name, '').isdigit()]
+    high_avg = column_average(rows, 'Max TemperatureC')
+    low_avg = column_average(rows, 'Min TemperatureC')
+    hum_avg = column_average(rows, ' Mean Humidity')
 
-        return statistics.mean(vals)
-    
-    return avg('Max TemperatureC'), avg('Min TemperatureC'), avg(' Mean Humidity')
+    return high_avg, low_avg, hum_avg
 
 # min and max temp in a specific file
 def get_month_min_max(file):
@@ -86,7 +90,6 @@ def parse_args():
     parser.add_argument('-b', '--barchart', help='Combined high/low bar chart ')
 
     return parser.parse_args()
-
 
 def main():
     args = parse_args()
